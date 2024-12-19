@@ -15,7 +15,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 
 #Initialise an empty list of images and the number to be captured
-number_of_images = 50
+number_of_images = 100
 imglist = []
 success = True
 
@@ -24,41 +24,41 @@ objpoints = []
 imgpoints = []
 retlist = []
 
-#Initialise chessboard object dimensions #8mm when using phone, 25mm for printed sheet
+#Initialise chessboard object dimensions #8mm when using phone, 2.5cm for printed sheet
 objp = np.zeros((9*6, 3), np.float32)
-objp[:,:2] = 8*np.mgrid[0:6, 0:9].T.reshape(-1,2)
+objp[:,:2] = 2.5*np.mgrid[0:6, 0:9].T.reshape(-1,2)
 #print(objp)
 
 ############ Comment out this block to avoid repeating capture ################
-# #Capture images from video
-# #Set up windows for the video stream and captured images
-# cv2.namedWindow("Captured Image")
-# cv2.namedWindow("Video Stream")
+#Capture images from video
+#Set up windows for the video stream and captured images
+cv2.namedWindow("Captured Image")
+cv2.namedWindow("Video Stream")
 
-# #Loop through the indices of images to be captured
-# capcount = 0
-# for imgnum in range(number_of_images):
-#     #Capture images continuously and wait for a keypress
-#     while success and cv2.waitKey(1) == -1:
-#         #Read an image from the Videocapture instance
-#         success, img = cap.read()
+#Loop through the indices of images to be captured
+capcount = 0
+for imgnum in range(number_of_images):
+    #Capture images continuously and wait for a keypress
+    while success and cv2.waitKey(1) == -1:
+        #Read an image from the Videocapture instance
+        success, img = cap.read()
 
-#         #Display the image
-#         cv2.imshow("Video Stream", img)
+        #Display the image
+        cv2.imshow("Video Stream", img)
    
-#     #When we exit the capture loop we save the last image and repeat
-#     cv2.imwrite("Image%03d.png" % (imgnum), img)
-#     capcount += 1
-#     cv2.imshow("Captured Image", img)
-#     print("Image captured")
+    #When we exit the capture loop we save the last image and repeat
+    cv2.imwrite("Image%03d.png" % (imgnum), img)
+    capcount += 1
+    cv2.imshow("Captured Image", img)
+    print("Image", imgnum, "captured")
 
-# #The Image index loop ends when number_of_images habe been captured
-# print("Captured", capcount, "images")
+#The Image index loop ends when number_of_images habe been captured
+print("Captured", capcount, "images")
 
-# #Clean up the viewing window and release the VideoCapture instance
-# cv2.destroyWindow("Captured Image")
-# cv2.destroyWindow("Video Stream")
-# cap.release() 
+#Clean up the viewing window and release the VideoCapture instance
+cv2.destroyWindow("Captured Image")
+cv2.destroyWindow("Video Stream")
+cap.release() 
 #####################################################################
 
 #Read images from files:

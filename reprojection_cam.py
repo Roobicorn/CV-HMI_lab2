@@ -26,7 +26,7 @@ imgpoints = []
 
 #Initialise chessboard object dimensions #8mm when using phone, 25mm for printed sheet
 objp = np.zeros((9*6, 3), np.float32)
-objp[:,:2] = 8*np.mgrid[0:6, 0:9].T.reshape(-1,2)
+objp[:,:2] = 2.5*np.mgrid[0:6, 0:9].T.reshape(-1,2)
 #print(objp)
 
 #define function to draw cartesian axes
@@ -38,7 +38,7 @@ def draw(img, originpts, imgpts):
     return img
 
 #axis matrix: 3 orthogonal vectors
-axis = np.float32([[30,0,0], [0,30,0], [0,0,-30]]).reshape(-1,3)
+axis = np.float32([[3,0,0], [0,3,0], [0,0,-3]]).reshape(-1,3)
 
 #import camera calibration parameters
 mtx = np.genfromtxt("intrinsic_matrix.csv", delimiter=",")
@@ -84,72 +84,4 @@ print("Captured", capcount, "images")
 cv2.destroyWindow("Captured Image")
 cv2.destroyWindow("Video Stream")
 cap.release() 
-#####################################################################
-
-# #Read images from files:
-# for imgnum in range(number_of_images):
-#     img = cv2.imread("Image%03d.png" % imgnum, cv2.IMREAD_GRAYSCALE)
-
-#     ret, corners = cv2.findChessboardCorners(img, (9,6), cv2.CALIB_CB_ADAPTIVE_THRESH + 
-#         cv2.CALIB_CB_FAST_CHECK + cv2.CALIB_CB_NORMALIZE_IMAGE)
-#     if ret == True:
-#         #img = cv2.drawChessboardCorners(img, (9,6), corners, ret)
-#         imglist.append(img)
-#         objpoints.append(objp)
-#         imgpoints.append(corners)
-#         retlist.append(ret)
-#         print("Image%03d.png keypoints captured" % imgnum)
-#     else:
-#         print("Keypoints not detected in Image%03d.png" % imgnum)
-
-# print("Keypoints captured for", len(imglist), "images")
-
-
-# #Refine localisation of detected 3D points:
-# #print("pre refining:", imgpoints[0][0], imgpoints[5][0]) #for testing
-# for imgnum in range(len(imglist)):
-#     subcorners = cv2.cornerSubPix(imglist[imgnum], imgpoints[imgnum],(11,11), (-1,-1), 
-#         (cv2.TermCriteria_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001))
-#     imgpoints[imgnum] = subcorners
-#     print("subcorners calculated for image", imgnum)
-# #print("post refining:", imgpoints[0][0], imgpoints[5][0])
-
-
-# #calibrate camera based on data collected
-# print("Calibrating...")
-# ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[0:2],
-#     None, (cv2.TERM_CRITERIA_COUNT+cv2.TERM_CRITERIA_EPS, 30, 0.0001))
-
-# #output and save calibration data
-# print("\nIntrinsic Matrix: \n")
-# print(mtx)
-# print("\nDistortion Coefficients: \n")
-# print(dist)
-# print("\nRotation Vectors:\n")
-# print(rvecs)
-# print("\nTranslation Vectors:\n")
-# print(tvecs)
-
-# with open("intrinsic_matrix.csv", "w") as file:
-#     writer = csv.writer(file)
-#     writer.writerows(mtx)
-
-# with open("distortion_coefficients.csv", "w") as file:
-#     writer = csv.writer(file)
-#     writer.writerows(dist)
-
-# with open("imgpoints.csv", "w") as file:
-#     writer = csv.writer(file)
-#     writer.writerows(imgpoints)
-
-# with open("objpoints.csv", "w") as file:
-#     writer = csv.writer(file)
-#     writer.writerows(objpoints)
-
-# with open("rotation_vectors.csv", "w") as file:
-#     writer = csv.writer(file)
-#     writer.writerows(rvecs)
-
-# with open("translation_vectors.csv", "w") as file:
-#     writer = csv.writer(file)
-#     writer.writerows(tvecs)
+5#####################################################################
