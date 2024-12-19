@@ -5,10 +5,10 @@ import csv
 #Initialise an empty list of images and the number to be captured
 number_of_images = 20
 
-#Initialise chessboard object dimensions #8mm when using phone, 25mm for printed sheet
-grid_unit_length = 2.475
+#Initialise chessboard object dimensions #8mm when using phone, 24.75mm for printed sheet
+grid_unit_length = 0.8
 objp = np.zeros((9*6, 3), np.float32)
-objp[:,:2] = grid_unit_length*np.mgrid[0:6, 0:9].T.reshape(-1,2)
+objp[:,:2] = grid_unit_length*np.mgrid[0:9, 0:6].T.reshape(-1,2)
 #print(objp)
 
 #set up criteria for cornerSubPix refinement
@@ -35,8 +35,8 @@ cv2.namedWindow("Projected Image")
 
 #Read images from files:
 for imgnum in range(number_of_images):
-    img = cv2.imread("Image%03d.png" % imgnum)
-    #img = cv2.imread("calibrated_undistortion_crop_%03d.png" % imgnum)
+    #img = cv2.imread("Image%03d.png" % imgnum)
+    img = cv2.imread("calibrated_undistortion_crop_%03d.png" % imgnum)
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     im_width, imheight = gray.shape[::-1]
@@ -56,7 +56,7 @@ for imgnum in range(number_of_images):
         cv2.imshow("Projected Image", img)
         cv2.waitKey(1)
         
-        cv2.imwrite("Reprojected_Image%03d.png" % imgnum, img)
+        cv2.imwrite("Reprojected_undistorted_Image%03d.png" % imgnum, img)
 
         print("ReprojectedImage%03d.png captured" % imgnum)
     else:

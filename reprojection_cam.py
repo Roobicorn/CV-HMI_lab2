@@ -9,10 +9,12 @@ if not cap.isOpened():
     print("Cannot open camera")
     exit()
 
-#Set the resolution for image capture
-cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+h = 720
+w = 1280
 
+#Set the resolution for image capture
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, w)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, h)
 
 #Initialise an empty list of images and the number to be captured
 number_of_images = 10
@@ -42,11 +44,14 @@ def draw(img, originpts, imgpts):
     return img
 
 #axis matrix: 3 orthogonal vectors
-axis = np.float32([[3,0,0], [0,3,0], [0,0,-3]]).reshape(-1,3)
+axis = np.float32([[6,0,0], [0,6,0], [0,0,-6]]).reshape(-1,3)
 
 #import camera calibration parameters
 mtx = np.load("intrinsic_matrix.npy")
 dist = np.load("distortion_coefficients.npy")
+
+#get optimal new camera mtx
+newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w,h))
 
 ############ Comment out this block to avoid repeating capture ################
 #Capture images from video
@@ -61,6 +66,11 @@ for imgnum in range(number_of_images):
     while success and cv2.waitKey(1) == -1:
         #Read an image from the Videocapture instance
         success, img = cap.read()
+
+        # undistort using undistort method
+        img = cv2.undistort(img, mtx, dist, None, newcameramtx)
+        x, y, w, h = roi
+        img = img[y:y+h, x:x+w]
         
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         ret, imgpoints = cv2.findChessboardCorners(gray, (9,6), cv2.CALIB_CB_ADAPTIVE_THRESH + 
@@ -71,9 +81,9 @@ for imgnum in range(number_of_images):
 
             img = cv2.drawChessboardCorners(img, (9,6), imgpoints, ret)
             ret, rvecs, tvecs = cv2.solvePnP(objp, imgpoints, mtx, dist)
-            # R, _ = cv2.Rodrigues(rvecs)
-            # print("Rotation matrix:\n", R)
-            # print("Translation vector:\n", tvecs)
+            R, _ = cv2.Rodrigues(rvecs)
+            print("Rotation matrix:\n", R)
+            print("Translation vector:\n", tvecs)
 
             projpoints, jacobian = cv2.projectPoints(axis, rvecs, tvecs, mtx, dist)
 
