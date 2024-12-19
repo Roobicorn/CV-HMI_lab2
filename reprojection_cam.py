@@ -22,8 +22,10 @@ success = True
 
 #Initialise empty list for chessboard corner points in world and image co-ordinates
 #objpoints = []
-imgpoints = []
+#imgpoints = []
 #retlist = []
+rvecs = []
+tvecs = []
 
 #Initialise chessboard object dimensions #8mm when using phone, 25mm for printed sheet
 grid_unit_length = 2.475
@@ -80,12 +82,8 @@ for imgnum in range(number_of_images):
             imgpoints = cv2.cornerSubPix(gray, imgpoints, (11,11), (-1,-1), criteria)
 
             img = cv2.drawChessboardCorners(img, (9,6), imgpoints, ret)
-            ret, rvecs, tvecs = cv2.solvePnP(objp, imgpoints, mtx, dist)
-            R, _ = cv2.Rodrigues(rvecs)
-            print("Rotation matrix:\n", R)
-            print("Translation vector:\n", tvecs)
-
-            projpoints, jacobian = cv2.projectPoints(axis, rvecs, tvecs, mtx, dist)
+            ret, rvec, tvec = cv2.solvePnP(objp, imgpoints, mtx, dist)
+            projpoints, jacobian = cv2.projectPoints(axis, rvec, tvec, mtx, dist)
 
             img = draw(img, imgpoints, projpoints)
 
@@ -98,11 +96,26 @@ for imgnum in range(number_of_images):
     cv2.imshow("Captured Image", img)
     print("Image captured")
 
+    R, _ = cv2.Rodrigues(rvec)
+    print("Rotation matrix:\n", R)
+    print("Translation vector:\n", tvec)
+    rvecs.append(R)
+    tvecs.append(tvec)
+
 #The Image index loop ends when number_of_images habe been captured
 print("Captured", capcount, "images")
+
+# save rotation and translation vectors of camera wrt centre of chessboard for each image
+with open("rotation_vectors.csv", "w") as file:
+    writer = csv.writer(file)
+    writer.writerows(rvecs)
+
+with open("translation_vectors.csv", "w") as file:
+    writer = csv.writer(file)
+    writer.writerows(tvecs)
 
 #Clean up the viewing window and release the VideoCapture instance
 cv2.destroyWindow("Captured Image")
 cv2.destroyWindow("Video Stream")
 cap.release() 
-5#####################################################################
+#####################################################################
