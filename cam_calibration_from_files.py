@@ -15,7 +15,7 @@ cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 
 #Initialise an empty list of images and the number to be captured
-number_of_images = 100
+number_of_images = 50
 imglist = []
 success = True
 
@@ -24,42 +24,44 @@ objpoints = []
 imgpoints = []
 retlist = []
 
-#Initialise chessboard object dimensions #8mm when using phone, 2.5cm for printed sheet
+#Initialise chessboard object dimensions #8mm when using phone, 2.475cm for printed sheet
+grid_unit_length = 0.8 #2.475
 objp = np.zeros((9*6, 3), np.float32)
-objp[:,:2] = 2.5*np.mgrid[0:6, 0:9].T.reshape(-1,2)
+objp[:,:2] = grid_unit_length*np.mgrid[0:9, 0:6].T.reshape(-1,2) #corrected 0:9, 0:6 from 0:6,0:9
 #print(objp)
 
 ############ Comment out this block to avoid repeating capture ################
-#Capture images from video
-#Set up windows for the video stream and captured images
-cv2.namedWindow("Captured Image")
-cv2.namedWindow("Video Stream")
+# #Capture images from video
+# #Set up windows for the video stream and captured images
+# cv2.namedWindow("Captured Image")
+# cv2.namedWindow("Video Stream")
 
-#Loop through the indices of images to be captured
-capcount = 0
-for imgnum in range(number_of_images):
-    #Capture images continuously and wait for a keypress
-    while success and cv2.waitKey(1) == -1:
-        #Read an image from the Videocapture instance
-        success, img = cap.read()
+# #Loop through the indices of images to be captured
+# capcount = 0
+# for imgnum in range(number_of_images):
+#     #Capture images continuously and wait for a keypress
+#     while success and cv2.waitKey(1) == -1:
+#         #Read an image from the Videocapture instance
+#         success, img = cap.read()
 
-        #Display the image
-        cv2.imshow("Video Stream", img)
+#         #Display the image
+#         cv2.imshow("Video Stream", img)
    
-    #When we exit the capture loop we save the last image and repeat
-    cv2.imwrite("Image%03d.png" % (imgnum), img)
-    capcount += 1
-    cv2.imshow("Captured Image", img)
-    print("Image", imgnum, "captured")
+#     #When we exit the capture loop we save the last image and repeat
+#     cv2.imwrite("Image%03d.png" % (imgnum), img)
+#     capcount += 1
+#     cv2.imshow("Captured Image", img)
+#     print("Image", imgnum, "captured")
 
-#The Image index loop ends when number_of_images habe been captured
-print("Captured", capcount, "images")
+# #The Image index loop ends when number_of_images habe been captured
+# print("Captured", capcount, "images")
 
-#Clean up the viewing window and release the VideoCapture instance
-cv2.destroyWindow("Captured Image")
-cv2.destroyWindow("Video Stream")
-cap.release() 
+# #Clean up the viewing window and release the VideoCapture instance
+# cv2.destroyWindow("Captured Image")
+# cv2.destroyWindow("Video Stream") 
 #####################################################################
+
+cap.release()
 
 #Read images from files:
 for imgnum in range(number_of_images):
@@ -89,10 +91,9 @@ for imgnum in range(len(imglist)):
     print("subcorners calculated for image", imgnum)
 #print("post refining:", imgpoints[0][0], imgpoints[5][0])
 
-
 #calibrate camera based on data collected
 print("Calibrating...")
-ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[0:2],
+ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, img.shape[::-1],
     None, (cv2.TERM_CRITERIA_COUNT+cv2.TERM_CRITERIA_EPS, 30, 0.0001))
 
 #output and save calibration data
@@ -100,31 +101,21 @@ print("\nIntrinsic Matrix: \n")
 print(mtx)
 print("\nDistortion Coefficients: \n")
 print(dist)
-print("\nRotation Vectors:\n")
-print(rvecs)
-print("\nTranslation Vectors:\n")
-print(tvecs)
+# print("\nRotation Vectors:\n")
+# print(rvecs)
+# print("\nTranslation Vectors:\n")
+# print(tvecs)
 
-with open("intrinsic_matrix.csv", "w") as file:
-    writer = csv.writer(file)
-    writer.writerows(mtx)
+# Save
+np.save("intrinsic_matrix.npy", mtx)
+np.save("distortion_coefficients.npy", dist)
 
-with open("distortion_coefficients.csv", "w") as file:
-    writer = csv.writer(file)
-    writer.writerows(dist)
+# # Load
+# lmtx = np.load("intrinsic_matrix.npy")
+# ldist = np.load("distortion_coefficients.npy")
 
-with open("imgpoints.csv", "w") as file:
-    writer = csv.writer(file)
-    writer.writerows(imgpoints)
-
-with open("objpoints.csv", "w") as file:
-    writer = csv.writer(file)
-    writer.writerows(objpoints)
-
-with open("rotation_vectors.csv", "w") as file:
-    writer = csv.writer(file)
-    writer.writerows(rvecs)
-
-with open("translation_vectors.csv", "w") as file:
-    writer = csv.writer(file)
-    writer.writerows(tvecs)
+# #output and save calibration data
+# print("\nIntrinsic Matrix: \n")
+# print(lmtx)
+# print("\nDistortion Coefficients: \n")
+# print(ldist)

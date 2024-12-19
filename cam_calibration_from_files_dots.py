@@ -64,7 +64,7 @@ imgpoints = [] #2d points in image plane
 
 cap = cv2.VideoCapture(0)
 found = 0
-number_of_images = 100
+number_of_images = 50
 
 while(found < number_of_images): 
     ret, img = cap.read() #capture frame by frame

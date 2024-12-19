@@ -1,15 +1,16 @@
 import numpy as np
 import cv2
 
-mtx = np.genfromtxt("intrinsic_matrix.csv", delimiter=",")
-dist = np.genfromtxt("distortion_coefficients.csv", delimiter=",")
+#import camera calibration parameters
+mtx = np.load("intrinsic_matrix.npy")
+dist = np.load("distortion_coefficients.npy")
 
 #get optimal new camera mtx
 img = cv2.imread("Image000.png")
 h, w = img.shape[:2]
 newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w,h))
 
-number_of_images = 100
+number_of_images = 50
 
 #Create undistorted image
 for imgnum in range(number_of_images):
