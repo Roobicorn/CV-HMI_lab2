@@ -54,6 +54,7 @@ dist = np.load("distortion_coefficients.npy")
 
 #get optimal new camera mtx
 newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w,h))
+x, y, w, h = roi
 
 ############ Comment out this block to avoid repeating capture ################
 #Capture images from video
@@ -71,7 +72,6 @@ for imgnum in range(number_of_images):
 
         # undistort using undistort method
         img = cv2.undistort(img, mtx, dist, None, newcameramtx)
-        x, y, w, h = roi
         img = img[y:y+h, x:x+w]
         
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
