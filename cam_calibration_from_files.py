@@ -3,7 +3,7 @@ import numpy as np
 import csv
 
 #Create VideoCapture instance
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 #Check if device can be opened, exit if not
 if not cap.isOpened():
     print("Cannot open camera")
@@ -25,7 +25,7 @@ imgpoints = []
 retlist = []
 
 #Initialise chessboard object dimensions #8mm when using phone, 2.475cm for printed sheet
-grid_unit_length = 0.8 #2.475
+grid_unit_length = 2.475
 objp = np.zeros((9*6, 3), np.float32)
 objp[:,:2] = grid_unit_length*np.mgrid[0:9, 0:6].T.reshape(-1,2) #corrected 0:9, 0:6 from 0:6,0:9
 #print(objp)
@@ -81,7 +81,6 @@ for imgnum in range(number_of_images):
 
 print("Keypoints captured for", len(imglist), "images")
 
-
 #Refine localisation of detected 3D points:
 #print("pre refining:", imgpoints[0][0], imgpoints[5][0]) #for testing
 for imgnum in range(len(imglist)):
@@ -101,21 +100,7 @@ print("\nIntrinsic Matrix: \n")
 print(mtx)
 print("\nDistortion Coefficients: \n")
 print(dist)
-# print("\nRotation Vectors:\n")
-# print(rvecs)
-# print("\nTranslation Vectors:\n")
-# print(tvecs)
 
 # Save
 np.save("intrinsic_matrix.npy", mtx)
 np.save("distortion_coefficients.npy", dist)
-
-# # Load
-# lmtx = np.load("intrinsic_matrix.npy")
-# ldist = np.load("distortion_coefficients.npy")
-
-# #output and save calibration data
-# print("\nIntrinsic Matrix: \n")
-# print(lmtx)
-# print("\nDistortion Coefficients: \n")
-# print(ldist)

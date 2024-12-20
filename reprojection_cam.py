@@ -3,7 +3,7 @@ import numpy as np
 import csv
 
 #Create VideoCapture instance
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 #Check if device can be opened, exit if not
 if not cap.isOpened():
     print("Cannot open camera")
