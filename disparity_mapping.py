@@ -23,46 +23,46 @@ newcameramtx, roi = cv2.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w,h))
 x, y, w, h = roi
 
 ################################ Image Capture #######################
-# #Set up windows for the video stream and captured images
-# cv2.namedWindow("Captured Image")
-# cv2.namedWindow("Video Stream")
+#Set up windows for the video stream and captured images
+cv2.namedWindow("Captured Image")
+cv2.namedWindow("Video Stream")
 
-# #Initialise an empty list of images and the number to be captured
-# number_of_images = 2
-# imglist = []
-# success = True
+#Initialise an empty list of images and the number to be captured
+number_of_images = 2
+imglist = []
+success = True
 
-# #Loop through the indices of images to be captured
-# for imgnum in range(number_of_images):
-#     #Capture images continuously and wait for a keypress
-#     while success and cv2.waitKey(1) == -1:
-#         #Read an image from the Videocapture instance
-#         success, img = cap.read()
+#Loop through the indices of images to be captured
+for imgnum in range(number_of_images):
+    #Capture images continuously and wait for a keypress
+    while success and cv2.waitKey(1) == -1:
+        #Read an image from the Videocapture instance
+        success, img = cap.read()
 
-#         # undistort using undistort method
-#         img = cv2.undistort(img, mtx, dist, None, newcameramtx)
-#         img = img[y:y+h, x:x+w]
+        # undistort using undistort method
+        img = cv2.undistort(img, mtx, dist, None, newcameramtx)
+        img = img[y:y+h, x:x+w]
         
-#         #Display the image
-#         cv2.imshow("Video Stream", img)
+        #Display the image
+        cv2.imshow("Video Stream", img)
    
-#     #When we exit the capture loop we save the last image and repeat
-#     imglist.append(img)
-#     cv2.imshow("Captured Image", img)
-#     print("Image",imgnum,"captured")
+    #When we exit the capture loop we save the last image and repeat
+    imglist.append(img)
+    cv2.imshow("Captured Image", img)
+    print("Image",imgnum,"captured")
 
-# #The Image index loop ends when number_of_images habe been captured
-# print("Captured", len(imglist), "images")
+#The Image index loop ends when number_of_images habe been captured
+print("Captured", len(imglist), "images")
 
-# #Save all images to image files for later use
-# for imgnum, img in enumerate(imglist):
-#     cv2.imwrite("Disparity_Image%03d.png" % (imgnum), img)
+#Save all images to image files for later use
+for imgnum, img in enumerate(imglist):
+    cv2.imwrite("Disparity_Image%03d.png" % (imgnum), img)
 
-# #Clean up the viewing window and release the VideoCapture instance
-# cv2.destroyWindow("Captured Image")
-# cv2.destroyWindow("Video Stream")
+#Clean up the viewing window and release the VideoCapture instance
+cv2.destroyWindow("Captured Image")
+cv2.destroyWindow("Video Stream")
 
-# cap.release()
+cap.release()
 
 ######################## Disparity Map ##########################
 
